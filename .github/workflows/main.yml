@@ -48,6 +48,11 @@ jobs:
           echo "keyPassword=${{ secrets.KEYSTORE_PASSWORD }}" >> android/key.properties
           echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
 
+      - name: Create .env file
+        run: |
+          echo "EMAIL='${{ secrets.SMTP_EMAIL }}'" > .env
+          echo "PASSWORD='${{ secrets.SMTP_PASSWORD }}'" >> .env
+
       - name: Get dependencies
         run: flutter pub get
 
