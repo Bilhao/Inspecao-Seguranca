@@ -11,7 +11,7 @@ class VeiculoPage extends StatefulWidget {
 }
 
 class _VeiculoPageState extends State<VeiculoPage> {
-  final veiculos = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
+  final veiculos = ["Veículo A", "Veículo B", "Veículo C"];
 
   String? dropMenuerrorText;
   String? textFielderrorText;

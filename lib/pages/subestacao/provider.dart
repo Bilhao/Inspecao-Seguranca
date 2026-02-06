@@ -3,7 +3,6 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../models/data.dart';
-import '../../models/firebase_server.dart';
 
 class SubestacaoProvider with ChangeNotifier {
   SubestacaoProvider() {
@@ -14,8 +13,7 @@ class SubestacaoProvider with ChangeNotifier {
 
   // Variáveis da página subestacao_page
   String _subestacao = "";
-  String _data =
-      ""
+  String _data = ""
       "${DateTime.now().day.toString().padLeft(2, '0')}/"
       "${DateTime.now().month.toString().padLeft(2, '0')}/"
       "${DateTime.now().year}";
@@ -30,7 +28,6 @@ class SubestacaoProvider with ChangeNotifier {
   final Map<int, Map<int, String?>> _respostas = {};
   final Map<int, Map<int, String?>> _observacoes = {};
   final Map<int, Map<int, String?>> _fotos = {};
-  final Map<int, Map<int, String?>> _downloadLinks = {};
 
   // Getters subestacao_page
   String get subestacao => _subestacao;
@@ -46,7 +43,6 @@ class SubestacaoProvider with ChangeNotifier {
   Map<int, Map<int, String?>> get respostas => _respostas;
   Map<int, Map<int, String?>> get observacoes => _observacoes;
   Map<int, Map<int, String?>> get fotos => _fotos;
-  Map<int, Map<int, String?>> get downloadLinks => _downloadLinks;
 
   // Setters subestacao_page
   set subestacao(String value) {
@@ -84,7 +80,6 @@ class SubestacaoProvider with ChangeNotifier {
         _respostas[itemId] = {pergunta.key: null};
         _observacoes[itemId] = {pergunta.key: null};
         _fotos[itemId] = {pergunta.key: null};
-        _downloadLinks[itemId] = {pergunta.key: null};
       }
     }
     notifyListeners();
@@ -101,16 +96,19 @@ class SubestacaoProvider with ChangeNotifier {
   }
 
   Future<void> saveFoto({required int itemId, required int perguntaId, required String fotoPath}) async {
-    _fotos[itemId]![perguntaId] = fotoPath;
-
-    var compressed = await FlutterImageCompress.compressAndGetFile(fotoPath, fotoPath.replaceAll(".jpg", "_compressed.jpg"), quality: 40);
-    _downloadLinks[itemId]![perguntaId] = await uploadFile(compressed!.path, _data);
+    var compressed = await FlutterImageCompress.compressAndGetFile(
+      fotoPath,
+      fotoPath.replaceAll(".jpg", "_compressed.jpg"),
+      quality: 30,
+      minWidth: 400,
+      minHeight: 400,
+    );
+    // Salva o caminho da foto comprimida (não a original)
+    _fotos[itemId]![perguntaId] = compressed!.path;
     notifyListeners();
   }
 
   Future<void> excluirFoto({required int itemId, required int perguntaId}) async {
-    deleteFile(_fotos[itemId]![perguntaId]!.replaceAll(".jpg", "_compressed.jpg"), _data);
-    _downloadLinks[itemId]![perguntaId] = null;
     _fotos[itemId]![perguntaId] = null;
     notifyListeners();
   }
@@ -130,8 +128,7 @@ class SubestacaoProvider with ChangeNotifier {
 
   Future<void> eraseSavedInfos() async {
     _subestacao = "";
-    _data =
-        ""
+    _data = ""
         "${DateTime.now().day.toString().padLeft(2, '0')}/"
         "${DateTime.now().month.toString().padLeft(2, '0')}/"
         "${DateTime.now().year}";
@@ -144,7 +141,6 @@ class SubestacaoProvider with ChangeNotifier {
         _respostas[itemId] = {pergunta.key: null};
         _observacoes[itemId] = {pergunta.key: null};
         _fotos[itemId] = {pergunta.key: null};
-        _downloadLinks[itemId] = {pergunta.key: null};
       }
     }
     final tempDir = await getTemporaryDirectory();

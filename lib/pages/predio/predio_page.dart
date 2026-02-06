@@ -11,7 +11,7 @@ class PredioPage extends StatefulWidget {
 }
 
 class _PredioPageState extends State<PredioPage> {
-  final predios = ["1", "2", "3"];
+  final predios = ["Prédio Administrativo A", "Prédio Administrativo B", "Prédio Administrativo C"];
 
   String? dropMenuerrorText;
   String? textFielderrorText;

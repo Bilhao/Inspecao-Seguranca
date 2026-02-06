@@ -1,129 +1,29 @@
 # Inspeção de Segurança CIPA
 
-Aplicativo Flutter para inspeções de segurança da CIPA (Comissão Interna de Prevenção de Acidentes), permitindo o registro, acompanhamento e exportação de inspeções em prédios, subestações, usinas e veículos.
-
-## Funcionalidades
-
-- Cadastro e gerenciamento de inspeções por tipo (Prédio, Subestação, Usina, Veículo)
-- Registro de respostas e observações para cada item/pergunta da inspeção
-- Captura e upload de fotos para cada pergunta, com compressão automática e armazenamento no Firebase Storage
-- Exportação dos dados da inspeção em formato XLSX (Excel), com opção de salvar localmente ou enviar por e-mail
-- Histórico de inspeções realizadas
-- Interface amigável e responsiva
-- Suporte a múltiplos inspetores por inspeção
-- Autenticação e permissões de acesso (em desenvolvimento)
-- Suporte a internacionalização (idioma principal: Português)
-
-## Estrutura do Projeto
-
-```
-lib/
-  main.dart
-  firebase_options.dart
-  models/
-    data.dart
-    firebase_server.dart
-    save.dart
-  pages/
-    home_page.dart
-    camera.dart
-    predio/
-      predio_page.dart
-      inspecao_page.dart
-      perguntas_page.dart
-      provider.dart
-      resumo_page.dart
-    subestacao/
-      subestacao_page.dart
-      inspecao_page.dart
-      perguntas_page.dart
-      provider.dart
-      resumo_page.dart
-    usina/
-      usina_page.dart
-      inspecao_page.dart
-      perguntas_page.dart
-      provider.dart
-      resumo_page.dart
-    veiculo/
-      veiculo_page.dart
-      inspecao_page.dart
-      perguntas_page.dart
-      provider.dart
-      resumo_page.dart
-  utils/
-    permissions.dart
-    routes.dart
-assets/
-  (imagens, ícones, etc)
-```
-
-## Instalação
-
-1. **Pré-requisitos**:
-
-   - Flutter SDK instalado ([documentação oficial](https://docs.flutter.dev/get-started/install))
-   - Conta no Firebase e projeto configurado (ver abaixo)
-   - Android Studio ou VS Code
-
-2. **Clone o repositório**:
-
-   ```sh
-   git clone https://github.com/seu-usuario/inspecao-seguranca-cipa.git
-   cd inspecao-seguranca-cipa
-   ```
-
-3. **Instale as dependências**:
-
-   ```sh
-   flutter pub get
-   ```
-
-4. **Configuração do Firebase**:
-
-   - Crie um projeto no [Firebase Console](https://console.firebase.google.com/)
-   - Ative o Firebase Storage
-   - Baixe o arquivo `google-services.json` (Android) e/ou `GoogleService-Info.plist` (iOS) e coloque nas pastas correspondentes (`android/app` e `ios/Runner`)
-   - Configure o arquivo `lib/firebase_options.dart` (gerado pelo [FlutterFire CLI](https://firebase.flutter.dev/docs/cli/))
-
-5. **Variáveis de ambiente**:
-
-   - Crie um arquivo `.env` na raiz do projeto para armazenar variáveis sensíveis (exemplo: chaves de API, configurações de e-mail)
-
-6. **Execute o app**:
-   ```sh
-   flutter run
-   ```
-
-## Uso
-
-1. Escolha o tipo de inspeção (Prédio, Subestação, Usina, Veículo)
-2. Preencha os dados iniciais (nome do local, data, inspetores)
-3. Responda às perguntas de cada item, adicione observações e fotos se necessário
-4. Finalize a inspeção e escolha salvar localmente ou enviar por e-mail (arquivo XLSX gerado automaticamente)
-5. As fotos são comprimidas e enviadas para o Firebase Storage, com links inseridos no relatório
+Modelo MVP de um aplicativo desenvolvido em Flutter para otimização de inspeções de segurança do trabalho e gestão da CIPA. O sistema permite a coleta de dados, preenchimento de listas de verificação (checklists) e a geração automatizada de relatórios.
 
 ## Tecnologias Utilizadas
 
-- [Flutter](https://flutter.dev/)
-- [Firebase (Storage, Core)](https://firebase.google.com/)
-- [Provider](https://pub.dev/packages/provider)
-- [Syncfusion Flutter XLSX](https://pub.dev/packages/syncfusion_flutter_xlsio) (para geração de planilhas)
-- [flutter_image_compress](https://pub.dev/packages/flutter_image_compress)
-- [path_provider](https://pub.dev/packages/path_provider)
-- [flutter_dotenv](https://pub.dev/packages/flutter_dotenv)
-- [flutter_localizations](https://pub.dev/packages/flutter_localizations)
+O projeto foi construído utilizando o **Flutter** (SDK ^3.6.1) como framework principal. A arquitetura baseia-se nas seguintes bibliotecas e serviços:
 
-## Estrutura dos Dados
+* **Gerenciamento de Estado:** `provider` para o controlo centralizado do estado da aplicação.
+* **Persistência de Dados Local:** `sqflite` para a gestão de base de dados SQLite interna.
+* **Geração de Relatórios:** `syncfusion_flutter_xlsio` para a criação de planilhas em formato Excel (.xlsx).
+* **Comunicação:** `mailer` para o envio de relatórios via protocolo SMTP.
+* **Captura e Processamento de Imagens:** `camerawesome` para a interface de câmara e `flutter_image_compress` para otimização de armazenamento.
+* **Utilitários:** `flutter_dotenv` para gestão de variáveis de ambiente e `file_picker` para manipulação de ficheiros no sistema.
 
-- Cada inspeção é composta por itens, perguntas, respostas, observações e fotos
-- As fotos são armazenadas no Firebase Storage e os links são inseridos na planilha gerada
-- Os dados podem ser exportados em XLSX para análise posterior
+## Estrutura de Dados
 
-## Licença
+A aplicação opera com um modelo de dados local, garantindo funcionalidade offline para as inspeções de campo.
 
-Este projeto é de uso restrito e propriedade da empresa. Não é permitido uso, cópia, distribuição ou modificação sem autorização expressa dos responsáveis legais.
+### Base de Dados Local (SQLite)
 
-## Contato
+A persistência dos dados é gerida através de um banco SQLite inicializado a partir de um ativo pré-configurado (`assets/data.db`). A estrutura lógica organiza-se da seguinte forma:
 
-Dúvidas, sugestões ou problemas? Abra uma issue ou envie um e-mail para [rafaelr.bilhao@gmail.com](mailto:rafaelr.bilhao@gmail.com).
+* **Tabelas de Inspeção:** Segmentadas por módulos operacionais (Subestação, Usina, Prédio, Veículo).
+* **Definição de Entidades:**
+* **Identificadores de Grupo (`itens_id`):** Categorização macro dos pontos de inspeção.
+* **Descrição dos Itens (`itens`):** Detalhe do objeto ou área a ser inspecionada.
+* **Pontos de Verificação (`perguntas`):** Critérios específicos de conformidade a serem avaliados pelo inspetor.
+

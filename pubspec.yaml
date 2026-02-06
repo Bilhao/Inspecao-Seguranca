@@ -52,9 +52,6 @@ dependencies:
   flutter_dotenv: ^6.0.0
   image_picker: ^1.1.2
   camerawesome: ^2.1.0
-  firebase_core: ^4.4.0
-  firebase_storage: ^13.0.6
-  firebase_app_check: ^0.4.1+4
   flutter_image_compress: ^2.4.0
 
 dev_dependencies:
@@ -81,9 +78,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # SECURITY: .env should NOT be included as an asset!
-  # Use --dart-define or environment variables instead for production
   assets:
+    - .env
     - assets/data.db
     - assets/images/veiculo/veiculo.png
     - assets/images/veiculo/veiculo-imagem-superior-1-5.png

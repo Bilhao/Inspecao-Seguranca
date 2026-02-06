@@ -3,7 +3,6 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../models/data.dart';
-import '../../models/firebase_server.dart';
 
 class UsinaProvider with ChangeNotifier {
   UsinaProvider() {
@@ -29,7 +28,6 @@ class UsinaProvider with ChangeNotifier {
   final Map<int, Map<int, String?>> _respostas = {};
   final Map<int, Map<int, String?>> _observacoes = {};
   final Map<int, Map<int, String?>> _fotos = {};
-  final Map<int, Map<int, String?>> _downloadLinks = {};
 
   // Getters usina_page
   String get usina => _usina;
@@ -45,7 +43,6 @@ class UsinaProvider with ChangeNotifier {
   Map<int, Map<int, String?>> get respostas => _respostas;
   Map<int, Map<int, String?>> get observacoes => _observacoes;
   Map<int, Map<int, String?>> get fotos => _fotos;
-  Map<int, Map<int, String?>> get downloadLinks => _downloadLinks;
 
   // Setters usina_page
   set usina(String value) {
@@ -83,7 +80,6 @@ class UsinaProvider with ChangeNotifier {
         _respostas[itemId] = {pergunta.key: null};
         _observacoes[itemId] = {pergunta.key: null};
         _fotos[itemId] = {pergunta.key: null};
-        _downloadLinks[itemId] = {pergunta.key: null};
       }
     }
     notifyListeners();
@@ -100,20 +96,19 @@ class UsinaProvider with ChangeNotifier {
   }
 
   Future<void> saveFoto({required int itemId, required int perguntaId, required String fotoPath}) async {
-    _fotos[itemId]![perguntaId] = fotoPath;
-
     var compressed = await FlutterImageCompress.compressAndGetFile(
       fotoPath,
       fotoPath.replaceAll(".jpg", "_compressed.jpg"),
       quality: 30,
+      minWidth: 400,
+      minHeight: 400,
     );
-    _downloadLinks[itemId]![perguntaId] = await uploadFile(compressed!.path, _data);
+    // Salva o caminho da foto comprimida (não a original)
+    _fotos[itemId]![perguntaId] = compressed!.path;
     notifyListeners();
   }
 
   Future<void> excluirFoto({required int itemId, required int perguntaId}) async {
-    deleteFile(_fotos[itemId]![perguntaId]!.replaceAll(".jpg", "_compressed.jpg"), _data);
-    _downloadLinks[itemId]![perguntaId] = null;
     _fotos[itemId]![perguntaId] = null;
     notifyListeners();
   }
@@ -146,7 +141,6 @@ class UsinaProvider with ChangeNotifier {
         _respostas[itemId] = {pergunta.key: null};
         _observacoes[itemId] = {pergunta.key: null};
         _fotos[itemId] = {pergunta.key: null};
-        _downloadLinks[itemId] = {pergunta.key: null};
       }
     }
     final tempDir = await getTemporaryDirectory();

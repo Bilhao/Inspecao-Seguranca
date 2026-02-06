@@ -13,6 +13,30 @@ import 'package:inspecaosegurancacipa/pages/veiculo/provider.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
+/// Adiciona uma imagem embutida na célula do Excel
+void addEmbeddedImage(Worksheet sheet, int row, int col, String? fotoPath) {
+  if (fotoPath == null || fotoPath.isEmpty) {
+    sheet.getRangeByIndex(row, col).setText("---");
+    return;
+  }
+
+  final file = File(fotoPath);
+  if (!file.existsSync()) {
+    sheet.getRangeByIndex(row, col).setText("---");
+    return;
+  }
+
+  try {
+    final bytes = file.readAsBytesSync();
+    final picture = sheet.pictures.addStream(row, col, bytes);
+    picture.height = 80;
+    picture.width = 80;
+    sheet.setRowHeightInPixels(row, 85);
+  } catch (e) {
+    sheet.getRangeByIndex(row, col).setText("Erro ao carregar foto");
+  }
+}
+
 Future<bool> subestacaotoxlsx({required SubestacaoProvider provider, required bool sendEmail, destinatario}) async {
   final Workbook workbook = Workbook();
   final Worksheet sheet = workbook.worksheets[0];
@@ -68,13 +92,7 @@ Future<bool> subestacaotoxlsx({required SubestacaoProvider provider, required bo
       sheet.getRangeByIndex(currentRow, 2).setText(pergunta.value);
       sheet.getRangeByIndex(currentRow, 3).setText(provider.respostas[itemId]![pergunta.key] ?? "---");
       sheet.getRangeByIndex(currentRow, 4).setText(provider.observacoes[itemId]![pergunta.key] ?? "---");
-      if (provider.downloadLinks[itemId]![pergunta.key] == null) {
-        sheet.getRangeByIndex(currentRow, 5).setText("---");
-      } else {
-        final Hyperlink hyperlink = sheet.hyperlinks.add(sheet.getRangeByIndex(currentRow, 5), HyperlinkType.url, provider.downloadLinks[itemId]![pergunta.key]!);
-        hyperlink.screenTip = 'Abrir imagem do servidor.';
-        hyperlink.textToDisplay = 'Foto';
-      }
+      addEmbeddedImage(sheet, currentRow, 5, provider.fotos[itemId]![pergunta.key]);
       currentRow++;
     }
     currentRow++;
@@ -84,7 +102,7 @@ Future<bool> subestacaotoxlsx({required SubestacaoProvider provider, required bo
   sheet.autoFitColumn(2);
   sheet.autoFitColumn(3);
   sheet.autoFitColumn(4);
-  sheet.autoFitColumn(5);
+  sheet.setColumnWidthInPixels(5, 90);
 
   final List<int> fileBytes = workbook.saveSync();
   workbook.dispose();
@@ -153,13 +171,7 @@ Future<bool> usinatoxlsx({required UsinaProvider provider, required bool sendEma
       sheet.getRangeByIndex(currentRow, 2).setText(pergunta.value);
       sheet.getRangeByIndex(currentRow, 3).setText(provider.respostas[itemId]![pergunta.key] ?? "---");
       sheet.getRangeByIndex(currentRow, 4).setText(provider.observacoes[itemId]![pergunta.key] ?? "---");
-      if (provider.downloadLinks[itemId]![pergunta.key] == null) {
-        sheet.getRangeByIndex(currentRow, 5).setText("---");
-      } else {
-        final Hyperlink hyperlink = sheet.hyperlinks.add(sheet.getRangeByIndex(currentRow, 5), HyperlinkType.url, provider.downloadLinks[itemId]![pergunta.key]!);
-        hyperlink.screenTip = 'Abrir imagem do servidor.';
-        hyperlink.textToDisplay = 'Foto';
-      }
+      addEmbeddedImage(sheet, currentRow, 5, provider.fotos[itemId]![pergunta.key]);
       currentRow++;
     }
     currentRow++;
@@ -169,7 +181,7 @@ Future<bool> usinatoxlsx({required UsinaProvider provider, required bool sendEma
   sheet.autoFitColumn(2);
   sheet.autoFitColumn(3);
   sheet.autoFitColumn(4);
-  sheet.autoFitColumn(5);
+  sheet.setColumnWidthInPixels(5, 90);
 
   final List<int> fileBytes = workbook.saveSync();
   workbook.dispose();
@@ -238,13 +250,7 @@ Future<bool> prediotoxlsx({required PredioProvider provider, required bool sendE
       sheet.getRangeByIndex(currentRow, 2).setText(pergunta.value);
       sheet.getRangeByIndex(currentRow, 3).setText(provider.respostas[itemId]![pergunta.key] ?? "---");
       sheet.getRangeByIndex(currentRow, 4).setText(provider.observacoes[itemId]![pergunta.key] ?? "---");
-      if (provider.downloadLinks[itemId]![pergunta.key] == null) {
-        sheet.getRangeByIndex(currentRow, 5).setText("---");
-      } else {
-        final Hyperlink hyperlink = sheet.hyperlinks.add(sheet.getRangeByIndex(currentRow, 5), HyperlinkType.url, provider.downloadLinks[itemId]![pergunta.key]!);
-        hyperlink.screenTip = 'Abrir imagem do servidor.';
-        hyperlink.textToDisplay = 'Foto';
-      }
+      addEmbeddedImage(sheet, currentRow, 5, provider.fotos[itemId]![pergunta.key]);
       currentRow++;
     }
     currentRow++;
@@ -254,7 +260,7 @@ Future<bool> prediotoxlsx({required PredioProvider provider, required bool sendE
   sheet.autoFitColumn(2);
   sheet.autoFitColumn(3);
   sheet.autoFitColumn(4);
-  sheet.autoFitColumn(5);
+  sheet.setColumnWidthInPixels(5, 90);
 
   final List<int> fileBytes = workbook.saveSync();
   workbook.dispose();
@@ -318,13 +324,7 @@ Future<bool> veiculotoxlsx({required VeiculoProvider provider, required bool sen
       sheet.getRangeByIndex(currentRow, 2).setText(pergunta.value);
       sheet.getRangeByIndex(currentRow, 3).setText(provider.respostas[itemId]![pergunta.key] ?? "---");
       sheet.getRangeByIndex(currentRow, 4).setText(provider.observacoes[itemId]![pergunta.key] ?? "---");
-      if (provider.downloadLinks[itemId]![pergunta.key] == null) {
-        sheet.getRangeByIndex(currentRow, 5).setText("---");
-      } else {
-        final Hyperlink hyperlink = sheet.hyperlinks.add(sheet.getRangeByIndex(currentRow, 5), HyperlinkType.url, provider.downloadLinks[itemId]![pergunta.key]!);
-        hyperlink.screenTip = 'Abrir imagem do servidor.';
-        hyperlink.textToDisplay = 'Foto';
-      }
+      addEmbeddedImage(sheet, currentRow, 5, provider.fotos[itemId]![pergunta.key]);
       currentRow++;
     }
     currentRow++;
@@ -334,7 +334,7 @@ Future<bool> veiculotoxlsx({required VeiculoProvider provider, required bool sen
   sheet.autoFitColumn(2);
   sheet.autoFitColumn(3);
   sheet.autoFitColumn(4);
-  sheet.autoFitColumn(5);
+  sheet.setColumnWidthInPixels(5, 90);
 
   final List<int> fileBytes = workbook.saveSync();
   workbook.dispose();

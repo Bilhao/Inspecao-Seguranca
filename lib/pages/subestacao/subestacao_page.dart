@@ -11,29 +11,7 @@ class SubestacaoPage extends StatefulWidget {
 }
 
 class _SubestacaoPageState extends State<SubestacaoPage> {
-  final subestacoes = [
-    "SE ANDIRA LESTE",
-    "SE APUCARANA",
-    "SE ARARAQUARA COPEL",
-    "SE ARARAQUARA MSG",
-    "SE ASSIS 230 KV",
-    "SE ASSIS 525 KV",
-    "SE CAMPO MOURÃO",
-    "SE CERQUILHO",
-    "SE FERNÃO DIAS",
-    "SE FIGUEIRA",
-    "SE IBIPORÃ",
-    "SE ITATIBA",
-    "SE LONDRINA",
-    "SE LONDRINA ELETROSUL",
-    "SE LONDRINA SUL",
-    "SE MARINGÁ",
-    "SE PARAGUAÇU PAULISTA",
-    "ESTAÇÃO REP. LT ITT/BTA",
-    "SE SARANDI",
-    "SE STA BARBARA DO OESTE",
-    "SE TAUBATE"
-  ];
+  final subestacoes = ["Subestação A", "Subestação B", "Subestação C"];
 
   String? dropMenuerrorText;
   String? textFielderrorText;

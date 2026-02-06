@@ -11,13 +11,7 @@ class UsinaPage extends StatefulWidget {
 }
 
 class _UsinaPageState extends State<UsinaPage> {
-  final usinas = [
-    "GJC-US (Governador Jayme Canet Junior)",
-    "GPC-US (Governador Parigot de Souza)",
-    "GBM-US (Governador Bento Munhoz)",
-    "GNB-US (Governador Ney Braga)",
-    "GJR-US (Governador José Richa)"
-  ];
+  final usinas = ["Usina A", "Usina B", "Usina C"];
 
   String? dropMenuerrorText;
   String? textFielderrorText;
