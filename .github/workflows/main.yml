@@ -56,6 +56,11 @@ jobs:
       - name: Get dependencies
         run: flutter pub get
 
+      - name: Fix file_picker plugin
+        run: |
+          FILE_PICKER_PATH=$(find ~/.pub-cache/hosted/pub.dev -name "file_picker-*" -type d | head -1)
+          sed -i "s/apply plugin: 'com.android.library'/apply plugin: 'com.android.library'\napply plugin: 'kotlin-android'/" "$FILE_PICKER_PATH/android/build.gradle"
+
       - name: Build APK
         run: flutter build apk --release --split-per-abi
 
